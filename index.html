@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta property="og:title" content="valotalive.com">
+	<meta property="og:image" content="https:/valotalive.com/img/valotalive_white_on_black.png">
+	<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+	<script type="text/javascript" src="../../lib/utils.js"></script>
+	<script type="text/javascript" src="../..//en/lib/valotaUtils.js"></script>
+	<script type="text/javascript" src="../..//en/lib/fw.js"></script>
+	<link rel="shortcut icon" href="../../img/valotalive_no_bg.ico">
+	<!-- Start Alexa Certify Javascript -->
+	<script type="text/javascript">
+		_atrk_opts = { atrk_acct:"IFRYj1a0CM00EF", domain:"valotalive.com",dynamic: true};
+		(function() {
+			var as = document.createElement('script');
+			as.type = 'text/javascript';
+			as.async = true;
+			as.src = "https://d31qbv1cthcecs.cloudfront.net/atrk.js";
+			var s = document.getElementsByTagName('script')[0];
+			s.parentNode.insertBefore(as, s);
+		})();
+	</script>
+	<noscript>
+		<img src="https://d5nxst8fruw4z.cloudfront.net/atrk.gif?account=IFRYj1a0CM00EF" style="display:none" height="1" width="1" alt="" />
+	</noscript>
+	<!-- End Alexa Certify Javascript -->
+	<link href='https://fonts.googleapis.com/css?family=Abel:700,600,400,300' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" type="text/css" href="../../css/demo.css" />
+	<title>valotalive.com magic!</title>
+	<style>
+	
+	#playground{
+		width:853px;
+		height:480px;
+		border-top-right-radius:73px;
+		overflow:hidden;
+		background:url('../../img/dry_earth_texture.jpg');
+	}
+
+	#labyrinth{
+		width:640px;
+		height:auto;
+		border-top-right-radius:73px;
+		margin-left:213px;
+	}
+
+	#code{
+		width:839px;
+		height:400px;
+		border-top-right-radius:73px;
+	}
+
+	#lion{
+		width:180px;
+		height:auto;
+		position:absolute;
+	}
+
+	textarea{
+		font-family:monospace;
+		background-color:white;
+		color:black;
+	}
+
+	.main>a>img{
+		width:300px;
+		height:129px;
+	}
+
+	#ready{
+		margin-bottom:51px;
+		font-family:Abel;
+		padding-top:10px;
+		padding-bottom:10px;
+		color:white;
+		border:2px solid #f37237;
+		margin-left:auto;
+		margin-right:auto;
+		font-weight:bold;
+		background-color:#f1ca37;
+		width:853px;
+		font-size:1.5em;
+	}
+
+	@media screen and (max-width:960px)
+		
+		#playground{
+			width:88.8541667vw;
+			height:50vw;
+			border-top-right-radius:7.576vw;
+		}
+		#labyrinth{
+			width:66.6667vw;
+			border-top-right-radius:7.576vw;
+			margin-left:22.1875vw;
+		}
+
+		#lion{
+			width:18.75vw;
+		}
+
+		#ready{
+			width:88.8541667vw;
+		}
+		#code{
+			width:87.3958333vw;
+			height:41.66667vw;
+			border:1px solid #f37237;
+			padding:0.52vw;
+			border-top-right-radius:7.576vw;
+		}	
+	</style>
+</head>
+
+<body onload="hideLanguageButton();">
+	<div class="framework">
+		<div class='l10n' id='l10n'>
+			<div class='flags' id='flags' onmouseover="this.style.cursor='pointer';">
+				<div class='flag_en flag' onclick=";return false;"></div>
+			</div>
+			<form id='l10n_selection' name='input' action='../..//select_language.php' method='get'>
+				<select onchange='document.location.href="../..//"+this.value+"/joinus";'>
+					<option value='en' selected>en</option>
+				</select>
+				<input type='submit' value='Go'>
+			</form>
+		</div>
+		<div class="username" id="username">
+			<div class="signup_header"> | <a href="../../en/signup/">Sign up</a></div>
+			<div class="header_login">
+				<form class="login" action="#" method="POST">
+					<input id="email" class="login_email" maxlength="80" name="email" size="20" type="email" placeholder="E-mail" required/>
+					<input id="password" class="login_password" maxlength="16" name="password" size="8" type="password" placeholder="Password" required/>
+					<input class="login_submit" type="submit" value="Login&nbsp;&#9654;" name="submit">
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class=topbg style="background-image:url('../..//img/wallscreens.jpg');"></div>
+	
+	<div class="main">
+		<a href="../../en"><img src="../../img/valotalive_white.png" alt="valotalive.com"></a>
+		<div id="box" class="box color2">
+			<h2>Hark Applicant!</h2><br/>
+			To prove yourself a true wizard of JavaScript, turn the lion into a mouse and make it navigate through the labyrinth without touching the walls. The more the WOW, the better :) Best of luck!
+			<br/><br/>
+			Only submit code you wrote yourself.
+			<br/><br/>
+			Testing will be done on a 
+			<code>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36</code>
+			 or later.
+			<br/><br/><br/>
+			<div id="playground">
+				<img id="lion" src="img/lion_colored.png" alt="lion">
+				<img id="labyrinth" src="img/labyrinth.png" alt="labyrinth">
+			</div>
+			<br/><br/>
+			<textarea id="code" onchange="save()" onpaste="this.onchange();" oninput="this.onchange();" onkeyup="this.onchange();" placeholder="Your code goes here" autofocus></textarea>
+			<br/><br/>
+			 Refresh the page to run the code. Code needs to be valid Javascript.
+		</div>
+		<br><br>
+		<div class="footer">
+			All rights reserved<br>
+			Copyright &copy; Valota Ltd 2014-2015<br><br><br>
+			Regus Espoo Business Center<br>
+			Keilaranta 16<br>
+			02150 Espoo<br>
+			Finland<br>
+		</div>
+	</div>
+	<script src="main.js"></script>
+</body>
+
+</html>
+	<script type="text/javascript">
+		
+	var prefix="labyrinth";function supportsHTML5Storage(){
+		try{
+	 		return 'localStorage' in window && window['localStorage'] !== null;
+	 	}catch(e){
+	  		return false;
+	 	};
+	};
+	
+	function save(){
+		localStorage['valota_'+prefix+'_code']=document.getElementById('code').value.replace(/\n/g,"</br>");
+		localStorage['valota_'+prefix+'_page_width']=document.documentElement.clientWidth;
+	};
+
+	function resetLion(){
+		var lion=document.getElementById('lion');
+		var labyrinth=document.getElementById('labyrinth');
+		var playground=document.getElementById('playground');
+		lion.style.top=(playground.offsetTop+playground.offsetHeight*0.22)+"px";
+		lion.style.left=(playground.offsetLeft+playground.offsetWidth*0.010416667)+"px";
+	};
+
+	if(!supportsHTML5Storage())
+		document.getElementById('box').innerHTML='<h2>Please enable localStorage.<h2>';
+	else{
+		resetLion();
+		if(localStorage.getItem('valota_'+prefix+'_code')!=null&&localStorage.getItem('valota_'+prefix+'_code')!=""){
+			document.getElementById('code').value=localStorage.getItem('valota_'+prefix+'_code').replace(/<\/br>/g,"\n");
+	  		eval(document.getElementById('code').value);
+	  		var ready=document.createElement('button');
+	  		ready.setAttribute('id','ready');
+	  		ready.onclick=function(){
+	  			document.location.href="fill_application.php?id=1&prefix="+prefix;
+	  		};
+	  		ready.innerHTML='Abracadabra, I&#39;m ready to move on!';
+	  		var code=document.getElementById('code');
+	  		document.getElementById('box').insertBefore(ready,code);
+	 	};
+	};
+	window.onresize=resetLion;
+	</script>
