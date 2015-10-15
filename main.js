@@ -2,19 +2,22 @@ window.onload = function() {
 
     var box = document.getElementById('box');
     var playground = document.getElementById('playground');
-    var labirinth = document.getElementById('labyrinth');
+    var labyrinth = document.getElementById('labyrinth');
     var btn_start = document.createElement('button');
     var lion_img = document.getElementById('lion');
+    var finish_line = document.createElement('img');
     btn_start.setAttribute("id", "btn-start");
     btn_start.setAttribute("type", "button");
     btn_start.setAttribute('class', 'game-not-started');
     btn_start.innerHTML = 'Start';
     box.insertBefore(btn_start, playground);
+    
 
-    // invisible labirinth walls
+    // invisible labyrinth walls
     create_walls();
+    create_finish_line();
     var walls_all = document.getElementsByClassName('wall');
-    // console.log(walls_all);
+
 
     btn_start.addEventListener('click', function(){
         if (this.getAttribute('class') == 'game-not-started'){
@@ -23,84 +26,79 @@ window.onload = function() {
             start_game();
             this.innerHTML = 'Stop';
         }
-        else{
-            this.removeAttribute('class', 'game-started');
-            this.setAttribute('class', 'game-not-started');
+        else
             stop_game();
-            this.innerHTML = 'Start';
-        }
     });
 
     function start_game(){
         lion_img.src = "http://iconbug.com/data/66/300/197360e06b3a07dedf956f35ab5bfcbc.png";
         lion_set_size();
-        // track mouse movements inside div
-        playground.onmouseover = function playground_mouseover_event(){
-            if (btn_start.getAttribute('class') == 'game-started')
-                playground.style.cursor = 'none';
-                // playground.style.cursor = 'url(img/mouse2.gif), none';
-            else
-                playground.style.cursor = 'auto';   
-        };
-        // change picture position to cursor position
-        playground.onmousemove = function playground_mousemove_event(event) {
-            if (btn_start.getAttribute('class') == 'game-started'){
-                lion_set_position(event.pageX, event.pageY);
-
-                // stop the game when mouse moved over any wall
-                // check if lion img overlapping any wall after it have moved
-                for (var i = 0; i < walls_all.length; i++){
-                    // console.log(walls_all[i]);
-                    if (is_overlapping(lion_img, walls_all[i])){
-                        btn_start.removeAttribute('class', 'game-started');
-                        btn_start.setAttribute('class', 'game-not-started');
-                        stop_game();
-                        btn_start.innerHTML = 'Start';
-                        alert('Game Over!');
-                    }
-                }
-            }
-        };
-        // change to cursor outside of playground
-        playground.onmouseout = function remove_event(){
-            playground.style.cursor = 'auto';
-        };
-        // mousover event for labirinth
-        labirinth.onmouseover = function labirinth_mouseover_event(){
-            // track mouse movements inside labirinth
-            console.log('mouse on labirinth! Start the timer!');
-        };  
+        playground.addEventListener('mouseover', playground_mouseover);
+        playground.addEventListener('mousemove', playground_mousemove);
+        playground.addEventListener('mouseout', playground_mouseout);
+        labyrinth.addEventListener('mouseover', labyrinth_mouseover);
+        finish_line.addEventListener('mouseover', finish_mouseover);
     }
 
     function stop_game(){
         
         reset_lion();
+        btn_start.removeAttribute('class', 'game-started');
+        btn_start.setAttribute('class', 'game-not-started');
+        btn_start.innerHTML = 'Start';
+        playground.removeEventListener('mouseover', playground_mouseover);
+        playground.removeEventListener('mousemove', playground_mousemove);
+        finish_line.removeEventListener("mouseover", finish_mouseover);
+    }
 
-        // track mouse movements inside div
-        playground.onmouseover = function playground_mouseover_event(){
+    // EVENT HANDLERS ##########################################################
+    
+    // detect when lion enters labyrinth
+    function labyrinth_mouseover(e){
+        e.target.removeEventListener(e.type, arguments.callee);
+    }
+
+    // stop the game when cursor reaches finish line
+    function finish_mouseover(e){
+        alert('Congratulations! You won!\n\n Press Start to try again :)');
+        e.target.removeEventListener(e.type, arguments.callee);
+        stop_game();
+    }
+
+    // change cursor when on playground and game started
+    function playground_mouseover(){
+        if (btn_start.getAttribute('class') == 'game-started')
+            playground.style.cursor = 'none';
+        else
             playground.style.cursor = 'auto';   
-        };
+    };
 
-        // change picture position to cursor position
-        playground.onmousemove = function playground_mousemove_event(event) {
-            if (btn_start.getAttribute('class') == 'game-started')
-                lion_set_position(event.pageX, event.pageY);
-        };
+    // change picture position to cursor position
+    function playground_mousemove(event) {
+        if (btn_start.getAttribute('class') == 'game-started'){
+            lion_set_position(event.pageX, event.pageY);
 
-        // mousover event for labirinth
-        labirinth.onmouseover = function labirinth_mouseover_event(){
-            // track mouse movements inside labirinth
-            console.log('mouse on labirinth! Start the timer!');
-        };
-        var walls_all = document.getElementsByClassName('wall');
-        // console.log(walls_all);
-        for (var i = 0; i < walls_all.length; i++){
-            // console.log(walls_all[i]);
-            walls_all[i].onmouseover = function wall_mouseover_event(){
-
+            // stop the game when mouse moved over any wall
+            // check if lion img overlapping any wall after it have moved
+            for (var i = 0; i < walls_all.length; i++){
+                // console.log(walls_all[i]);
+                if (is_overlapping(lion_img, walls_all[i])){
+                    btn_start.removeAttribute('class', 'game-started');
+                    btn_start.setAttribute('class', 'game-not-started');
+                    stop_game();
+                    alert("Game Over! :(\nPress Start button to try again.\n\nNotice: you are not supposed to touch walls of the labyrinth");
+                    btn_start.innerHTML = 'Start';
+                }
             }
         }
-    }
+    };
+
+    // change to cursor outside of playground
+    function playground_mouseout(){
+        playground.style.cursor = 'auto';
+    };
+
+    // END EVENT HANDLERS ######################################################
 
     // set initial size of the lion img
     function lion_set_size(){
@@ -129,7 +127,7 @@ window.onload = function() {
     // create virtual labyrinth walls
     function create_walls(){
 
-        labirinth.style.position = 'absolute';
+        labyrinth.style.position = 'absolute';
         
         // create container for simulated labyrinth
         var walls = document.createElement('div');
@@ -205,6 +203,18 @@ window.onload = function() {
         wall_bot_right.style.width = '193px';
         wall_bot_right.style.position = 'absolute';
         bottom_walls.appendChild(wall_bot_right);
+    }
+
+    function create_finish_line(){
+        finish_line.src = "http://zaglara.com/wp-content/uploads/2015/06/wavy-checkered-flag-md.png";
+        finish_line.setAttribute("id", "finish");
+        finish_line.style.marginLeft = '800px';
+        finish_line.style.marginTop = '57px';   
+        finish_line.style.height = '55px';
+        finish_line.style.width = 'auto';
+        finish_line.style.position = 'absolute';
+        finish_line.style.zIndex = '10';
+        playground.appendChild(finish_line);
     }
 
     function get_position(element) {
