@@ -3,36 +3,44 @@ window.onload = function() {
     var box = document.getElementById('box');
     var playground = document.getElementById('playground');
     var labyrinth = document.getElementById('labyrinth');
-    var btn_start = document.createElement('button');
+    var btn_mode_1 = document.createElement('button');
+    var btn_mode_2 = document.createElement('button');
     var lion_img = document.getElementById('lion');
     var finish_line = document.createElement('img');
-    btn_start.setAttribute("id", "btn-start");
-    btn_start.setAttribute("type", "button");
-    btn_start.setAttribute('class', 'game-not-started');
-    btn_start.innerHTML = 'Start';
-    box.insertBefore(btn_start, playground);
+    var instructions = document.createElement('span');
+    var game_title = document.createElement('h2');
+    var brake = document.createElement('br');
     
-
-    // invisible labyrinth walls
+    game_title.innerHTML = 'Labyrinth Game'; 
+    box.insertBefore(game_title, playground);
+    box.insertBefore(instructions, playground);
+    create_button(btn_mode_1, 'btn-mode-1', 'Start first mode');
+    create_button(btn_mode_2, 'btn-mode-2', 'Start second mode');
+    box.insertBefore(brake, playground);
+    box.insertBefore(brake.cloneNode(true), playground);
+    reset_lion();
     create_walls();
     create_finish_line();
-    var walls_all = document.getElementsByClassName('wall');
+    var walls = document.getElementsByClassName('wall');
+    instructions.style.display = 'block';
+    instructions.style.width = '400px';
+    instructions.style.height = 'auto';
+    instructions.innerHTML = '<br>Once you press Start button the lion will turn into small mouse which you should navigate using mouse pointer to the finish through the labyrinth.<br><br>But beware, because none of the labyrinth walls should be touched by mouse!<br><br>'
+    btn_mode_1.addEventListener('click', start);
+    btn_mode_2.addEventListener('click', start_random_walk);
 
 
-    btn_start.addEventListener('click', function(){
-        if (this.getAttribute('class') == 'game-not-started'){
-            this.removeAttribute('class', 'game-not-started');
-            this.setAttribute('class', 'game-started');
-            start_game();
-            this.innerHTML = 'Stop';
-        }
-        else
-            stop_game();
-    });
+    // # TESTING ################################
 
+    // var clone = lion_img.cloneNode(true);
+    // clone.style.position = 'absolute';
+    // clone.setAttribute('id', 'clone');
+    // playground.appendChild(clone);
+
+    // START and STOP game ##################################################### 
     function start_game(){
         lion_img.src = "http://iconbug.com/data/66/300/197360e06b3a07dedf956f35ab5bfcbc.png";
-        lion_set_size();
+        img_set_size(lion_img);
         playground.addEventListener('mouseover', playground_mouseover);
         playground.addEventListener('mousemove', playground_mousemove);
         playground.addEventListener('mouseout', playground_mouseout);
@@ -41,15 +49,36 @@ window.onload = function() {
     }
 
     function stop_game(){
-        
         reset_lion();
-        btn_start.removeAttribute('class', 'game-started');
-        btn_start.setAttribute('class', 'game-not-started');
-        btn_start.innerHTML = 'Start';
+        btn_mode_1.removeAttribute('class', 'game-started');
+        btn_mode_1.setAttribute('class', 'game-not-started');
+        btn_mode_1.innerHTML = 'Start first mode';
         playground.removeEventListener('mouseover', playground_mouseover);
         playground.removeEventListener('mousemove', playground_mousemove);
         finish_line.removeEventListener("mouseover", finish_mouseover);
     }
+
+    var interval;
+    function start_random_walk_game(){
+        interval = setInterval(function(){
+            make_step();
+            if(is_overlapping(lion_img, finish_line)){
+                clearInterval(interval);
+                alert('Congratulations! You won!\n\n Press Start to try again :)');
+                stop_random_walk_game();
+            }
+        }, 200);
+    }
+
+    function stop_random_walk_game(){
+        clearInterval(interval);
+        reset_lion();
+        btn_mode_2.removeAttribute('class', 'game-started');
+        btn_mode_2.setAttribute('class', 'game-not-started');
+        btn_mode_2.innerHTML = 'Start second mode';
+    }
+
+    // #########################################################################
 
     // EVENT HANDLERS ##########################################################
     
@@ -67,7 +96,7 @@ window.onload = function() {
 
     // change cursor when on playground and game started
     function playground_mouseover(){
-        if (btn_start.getAttribute('class') == 'game-started')
+        if (btn_mode_1.getAttribute('class') == 'game-started')
             playground.style.cursor = 'none';
         else
             playground.style.cursor = 'auto';   
@@ -75,19 +104,19 @@ window.onload = function() {
 
     // change picture position to cursor position
     function playground_mousemove(event) {
-        if (btn_start.getAttribute('class') == 'game-started'){
+        if (btn_mode_1.getAttribute('class') == 'game-started'){
             lion_set_position(event.pageX, event.pageY);
 
             // stop the game when mouse moved over any wall
             // check if lion img overlapping any wall after it have moved
-            for (var i = 0; i < walls_all.length; i++){
-                // console.log(walls_all[i]);
-                if (is_overlapping(lion_img, walls_all[i])){
-                    btn_start.removeAttribute('class', 'game-started');
-                    btn_start.setAttribute('class', 'game-not-started');
+            for (var i = 0; i < walls.length; i++){
+                // console.log(walls[i]);
+                if (is_overlapping(lion_img, walls[i])){
+                    btn_mode_1.removeAttribute('class', 'game-started');
+                    btn_mode_1.setAttribute('class', 'game-not-started');
                     stop_game();
                     alert("Game Over! :(\nPress Start button to try again.\n\nNotice: you are not supposed to touch walls of the labyrinth");
-                    btn_start.innerHTML = 'Start';
+                    btn_mode_1.innerHTML = 'Start first mode';
                 }
             }
         }
@@ -98,13 +127,128 @@ window.onload = function() {
         playground.style.cursor = 'auto';
     };
 
+    // Start/Stop button click
+    function start(){
+        if (btn_mode_1.getAttribute('class') == 'game-not-started'){
+            btn_mode_1.removeAttribute('class', 'game-not-started');
+            btn_mode_1.setAttribute('class', 'game-started');
+            stop_random_walk_game();
+            start_game();
+            btn_mode_1.innerHTML = 'Stop first mode';
+        }
+        else
+            stop_game();
+    };
+
+    function start_random_walk(){
+        stop_game();
+        lion_img.src = "http://iconbug.com/data/66/300/197360e06b3a07dedf956f35ab5bfcbc.png";
+        img_set_size(lion_img);
+
+        if (btn_mode_2.getAttribute('class') == 'game-not-started'){
+            btn_mode_2.removeAttribute('class', 'game-not-started');
+            btn_mode_2.setAttribute('class', 'game-started');
+            start_random_walk_game();
+            btn_mode_2.innerHTML = 'Stop second mode';
+        }
+        else
+            stop_random_walk_game();
+    }
     // END EVENT HANDLERS ######################################################
 
+    // OTHER SUBRUTINES ########################################################
+
+    function make_step(){
+
+        var directions_list = ['left', 'up', 'right', 'down'];
+        var step_size = 10;
+        var selection;
+        var left;
+        var top;
+        var walls_overlap = false;
+        var playground_overlap = true;
+
+        do{
+            selection = directions_list[Math.floor(Math.random() * directions_list.length)];
+            console.log('selection: ' + selection);
+            left = parseFloat(lion_img.style.left);
+            top = parseFloat(lion_img.style.top);
+            switch(selection){
+                case 'left':
+                    // make it move left less
+                    left = left - step_size + 5;
+                    lion_img.style.left = left + 'px';
+                    break;
+                case 'up':
+                    top = top - step_size;
+                    lion_img.style.top = top + 'px';
+                    break;
+                case 'right':
+                    // make it move right more
+                    left = left + step_size  + 7;
+                    lion_img.style.left = left + 'px';
+                    break;
+                case 'down':
+                    top = top + step_size;
+                    lion_img.style.top = top + 'px';
+                    break;
+            }
+            walls_overlap = false;
+            // console.log(walls);
+            for(var i = 0; i < 6; i++){
+                // console.log(walls[i]);
+                if (is_overlapping(lion_img, walls[i])){
+                    walls_overlap = true;
+                    break;
+                }
+            }
+            if (is_overlapping(lion_img, playground))
+                playground_overlap = true;
+            else
+                playground_overlap = false;
+            console.log('playground_overlap: ' + playground_overlap);
+            console.log('walls_overlap: ' + walls_overlap);
+
+            if (playground_overlap == false || walls_overlap == true){
+                switch(selection){
+                    case 'left':
+                        // make it move left less
+                        left = left + step_size - 5;
+                        lion_img.style.left = left + 'px';
+                        break;
+                    case 'up':
+                        top = top + step_size;
+                        lion_img.style.top = top + 'px';
+                        break;
+                    case 'right':
+                        // make it move right more
+                        left = left - step_size - 7;
+                        lion_img.style.left = left + 'px';
+                        break;
+                    case 'down':
+                        top = top - step_size;
+                        lion_img.style.top = top + 'px';
+                        break;
+                }
+            }
+        }while(walls_overlap == true || playground_overlap == false);
+    }
+
+    function create_button(btn, id, text){
+        btn.setAttribute("id", id);
+        btn.setAttribute("type", "button");
+        btn.setAttribute('class', 'game-not-started');
+        btn.innerHTML = text;
+        btn.style.display = 'inline-block';
+        box.insertBefore(btn, playground);
+        btn.style.marginLeft = "30px";
+    }
+
     // set initial size of the lion img
-    function lion_set_size(){
-        lion_img.style.zIndex = 10;
-        lion_img.style.width = '10px';
-        lion_img.style.height = "auto";
+    function img_set_size(obj){
+        obj.style.zIndex = 10;
+        obj.style.width = '10px';
+        obj.style.height = "auto";
     };
     // resize lion img to increase difficulty level
     function lion_increase_size(multiplier){
@@ -120,8 +264,8 @@ window.onload = function() {
         lion_img.src = 'img/lion_colored.png';
         lion_img.style.width = '180px';
         lion_img.style.height = 'auto';
-        lion.style.top=(playground.offsetTop+playground.offsetHeight*0.22)+"px";
-        lion.style.left=(playground.offsetLeft+playground.offsetWidth*0.010416667)+"px";
+        lion.style.top=(playground.offsetTop+playground.offsetHeight*0.3)+"px";
+        lion.style.left=(playground.offsetLeft+playground.offsetWidth*0.01)+"px";
     }
 
     // create virtual labyrinth walls
@@ -245,3 +389,5 @@ window.onload = function() {
         return overlapping;
     }
 }
+
+// ##############################################################################
